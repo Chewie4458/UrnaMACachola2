@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "209454841910",
+    "project_id": "urnamacacholha2",
+    "storage_bucket": "urnamacacholha2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209454841910:android:9c2abd518f010513ee5897",
+        "android_client_info": {
+          "package_name": "com.example.urnamacachola2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8GVUVkb6oTMlEW3NvoAhNm_S0yhvud2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
