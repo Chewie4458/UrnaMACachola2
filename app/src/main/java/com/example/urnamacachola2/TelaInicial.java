@@ -63,33 +63,33 @@ public class TelaInicial extends AppCompatActivity {
         findViewById(android.R.id.content).post(new Runnable() {
             @Override
             public void run() {
-                //mostraAviso(votanteAtivo);
-                showModalDialog();
+                mostraAviso(votanteAtivo);
             }
         });
 
         // Ações
         btnConfirmar.setOnClickListener(view -> {
-            Toast.makeText(TelaInicial.this, "Calma que não tem nada ainda",
+            Toast.makeText(TelaInicial.this, "Votação Iniciada!",
                     Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(TelaInicial.this, TelaVotacao.class);
+            startActivity(intent);
         });
     }
 
     public void mostraAviso(DatabaseReference votanteAtivo) {
-        // Passo 1
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.aviso_bloqueio, null);
-
         TextView txtVotandoAgora = findViewById(R.id.txtVotandoAgora);
 
-        // Passo 2
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = false; // Permitir que o popup seja fechado ao clicar fora
-        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.aviso_bloqueio);
+        dialog.setCancelable(false); // Impede o fechamento ao clicar fora
 
-        popupWindow.setOutsideTouchable(false);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); // Remove o fundo padrão
+        // Configura o Dialog para ocultar a barra de navegação
+        dialog.getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+        );
 
         // Controle de votante ativo
         votanteAtivo.child("nome").addValueEventListener(new ValueEventListener() {
@@ -97,10 +97,10 @@ public class TelaInicial extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue().toString().equals("")) {
                     txtVotandoAgora.setText("");
-                    popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
+                    dialog.show();
                 } else {
                     txtVotandoAgora.setText("VOTANDO AGORA: " + dataSnapshot.getValue().toString());
-                    popupWindow.dismiss();
+                    dialog.dismiss();
                 }
             }
 
@@ -110,12 +110,5 @@ public class TelaInicial extends AppCompatActivity {
                 System.out.println("Error updating something hehe: " + databaseError.getMessage());
             }
         });
-    }
-
-    public void showModalDialog() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.aviso_bloqueio);
-        dialog.setCancelable(false); // Impede o fechamento ao clicar fora
-        dialog.show();
     }
 }
