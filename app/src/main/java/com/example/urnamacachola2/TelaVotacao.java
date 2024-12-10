@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class TelaVotacao extends AppCompatActivity {
     private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
     public Integer idCategoria = 1;
+    public String votandoAgora;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,9 @@ public class TelaVotacao extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Mantém a tela ativa
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         /* Trecho de código para deixar em tela cheia */
         WindowInsetsControllerCompat windowInsetsController =
@@ -65,6 +70,9 @@ public class TelaVotacao extends AppCompatActivity {
             }
         };
 
+        // Adiciona o callback ao dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
         // Declarações
         ImageButton btnConfirmar = findViewById(R.id.btnConfirmar);
         ImageButton btnReiniciar = findViewById(R.id.btnReiniciar);
@@ -78,20 +86,22 @@ public class TelaVotacao extends AppCompatActivity {
 
         DatabaseReference votanteAtivo = referencia.child("votanteAtivo");
         DatabaseReference categorias   = referencia.child("categorias");
+        DatabaseReference votantes     = referencia.child("votantes");
 
         // Controle de votante ativo
         votanteAtivo.child("nome").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue().toString().equals("")) {
-                    Toast.makeText(TelaVotacao.this, "Ei ei! Alguém mexeu no banco???",
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(TelaVotacao.this, "Ei ei! Alguém mexeu no banco???",
+//                            Toast.LENGTH_LONG).show();
 
                     txtVotandoAgora.setText("");
 
                     Intent intent = new Intent(TelaVotacao.this, TelaInicial.class);
                 } else {
                     txtVotandoAgora.setText("VOTANDO AGORA: " + dataSnapshot.getValue().toString());
+                    votandoAgora = dataSnapshot.getValue().toString();
                 }
             }
 
@@ -221,11 +231,14 @@ public class TelaVotacao extends AppCompatActivity {
                                 txtNum2.setText("");
 
                                 txtSelecionado.setText("");
+                            // Se não existe o id será considerado que acabou a votação
                             } else {
-                                txtCategoria.setText("Cabô");
-                                // Se não existe o id será considerado que acabou a votação
-                                // votou = true
-                                // vai pra tela de inicio ou tela fim??
+                                // Registra que votou
+                                votantes.child(votandoAgora).child("votou").setValue(true);
+
+                                // Vai para tela final
+                                Intent intent = new Intent(TelaVotacao.this, TelaFim.class);
+                                startActivity(intent);
                             }
                         }
 
