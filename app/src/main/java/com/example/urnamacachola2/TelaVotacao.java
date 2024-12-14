@@ -2,6 +2,7 @@ package com.example.urnamacachola2;
 
 import android.content.Intent;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -187,6 +188,10 @@ public class TelaVotacao extends AppCompatActivity {
                 Toast.makeText(TelaVotacao.this, "Selecione um indicado válido.",
                         Toast.LENGTH_LONG).show();
             } else {
+                // Toca som confirmar
+                final MediaPlayer mp = MediaPlayer.create(this, R.raw.som_confirmar);
+                mp.start();
+
                 // Verifica se é voto em branco
                 if (!(txtSelecionado.getText().toString().equals("VOTO EM BRANCO"))) {
                     // Recupera o número digitado

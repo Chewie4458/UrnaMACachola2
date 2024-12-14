@@ -1,6 +1,7 @@
 package com.example.urnamacachola2;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
@@ -68,6 +69,15 @@ public class TelaFim extends AppCompatActivity {
         DatabaseReference votanteAtivo = FirebaseDatabase.getInstance()
                 .getReference("votanteAtivo");
 
+        // Toca som fim
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.som_fim);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mp.start();
+            }
+        }, 2000);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -120,9 +130,7 @@ public class TelaFim extends AppCompatActivity {
                         System.out.println("Error updating something hehe: " + databaseError.getMessage());
                     }
                 });
-
             }
-
         }, 10000);
     }
 }
