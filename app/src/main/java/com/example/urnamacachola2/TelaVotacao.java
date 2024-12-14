@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +86,8 @@ public class TelaVotacao extends AppCompatActivity {
         TextView txtNum1         = findViewById(R.id.txtNum1);
         TextView txtNum2         = findViewById(R.id.txtNum2);
 
+        ImageView imgPop = findViewById(R.id.imgPop);
+
         DatabaseReference votanteAtivo = referencia.child("votanteAtivo");
         DatabaseReference categorias   = referencia.child("categorias");
         DatabaseReference votantes     = referencia.child("votantes");
@@ -122,6 +125,13 @@ public class TelaVotacao extends AppCompatActivity {
                         // Obtém o nome da categoria
                         String nomeCategoria = dataSnapshot.child("nome").getValue(String.class);
                         txtCategoria.setText(nomeCategoria); // Atualiza o TextView
+
+                        // Verifica se é categoria pop
+                        if (dataSnapshot.child("pop").getValue(Boolean.class)) {
+                            imgPop.setVisibility(View.VISIBLE);
+                        } else {
+                            imgPop.setVisibility(View.INVISIBLE);
+                        }
                     } else {
                         txtCategoria.setText("Nenhuma categoria configurada.");
                     }
@@ -230,6 +240,13 @@ public class TelaVotacao extends AppCompatActivity {
                                 // Obtém o nome da categoria
                                 String nomeCategoria = dataSnapshot.child("nome").getValue(String.class);
                                 txtCategoria.setText(nomeCategoria); // Atualiza o TextView
+
+                                // Verifica se é categoria pop
+                                if (dataSnapshot.child("pop").getValue(Boolean.class)) {
+                                    imgPop.setVisibility(View.VISIBLE);
+                                } else {
+                                    imgPop.setVisibility(View.INVISIBLE);
+                                }
 
                                 // Limpa campos
                                 txtNum1.setText("");
